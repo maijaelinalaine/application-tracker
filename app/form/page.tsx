@@ -1,7 +1,11 @@
 "use client";
 
 import { useForm } from "@/hooks/useForm";
+import { useRouter } from "next/navigation";
+
 export default function Form() {
+  const router = useRouter();
+
   const { formData, handleChange, handleReset } = useForm({
     position: "",
     company: "",
@@ -35,6 +39,8 @@ export default function Form() {
       const created = await res.json();
       console.log("created", created);
       handleReset();
+
+      router.push("/");
     } catch (err) {
       console.error("Fetch error:", err);
     }

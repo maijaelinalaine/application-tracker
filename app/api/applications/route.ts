@@ -1,6 +1,23 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export async function GET() {
+  try {
+    const applications = await prisma.application.findMany({
+      orderBy: {
+        createdAt: "desc", // Most recent first
+      },
+    });
+    return NextResponse.json(applications);
+  } catch (err) {
+    console.error("GET /api/applications error:", err);
+    return NextResponse.json(
+      { error: "Failed to fetch applications" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
     if (!request.headers.get("content-type")?.includes("application/json")) {
@@ -18,7 +35,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    // basic validation
     if (!data.position || !data.company) {
       return NextResponse.json(
         { error: "position and company required" },
