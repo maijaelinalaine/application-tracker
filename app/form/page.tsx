@@ -11,10 +11,33 @@ export default function Form() {
     url: "",
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formData);
-    handleReset();
+
+    console.log("Submitting form data:", formData); // Log what we're sending
+
+    try {
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      console.log("Response status:", res.status); // Log the status
+
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("create failed", err);
+        console.error("Status:", res.status);
+        return;
+      }
+
+      const created = await res.json();
+      console.log("created", created);
+      handleReset();
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
   };
 
   return (
