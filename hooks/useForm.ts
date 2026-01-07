@@ -1,26 +1,18 @@
-import { useState } from "react";
+import React from "react";
 
-export const useForm = <T>(initialValues: T) => {
-  const [formData, setFormData] = useState<T>(initialValues);
+export function useForm<T extends Record<string, any>>(initialState: T) {
+  const [formData, setFormData] = React.useState<T>(initialState);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
-    const { id, value, type, checked } = e.target as HTMLInputElement;
-    setFormData((prev) => ({
-      ...prev,
-      [id]: type === "checkbox" ? checked : value,
-    }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleReset = () => {
-    setFormData(initialValues);
-  };
+  const handleReset = () => setFormData(initialState);
 
-  return {
-    formData,
-    handleChange,
-    handleReset,
-    setFormData,
-  };
-};
+  return { formData, handleChange, handleReset };
+}
