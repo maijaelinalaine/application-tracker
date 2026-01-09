@@ -18,7 +18,7 @@ export default function Form() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log("Submitting form data:", formData); // Log what we're sending
+    console.log("Submitting form data:", formData);
 
     try {
       const res = await fetch("/api/applications", {
@@ -27,7 +27,7 @@ export default function Form() {
         body: JSON.stringify(formData),
       });
 
-      console.log("Response status:", res.status); // Log the status
+      console.log("Response status:", res.status);
 
       if (!res.ok) {
         const err = await res.json();
@@ -47,15 +47,15 @@ export default function Form() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-2">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-lg md:w-1/3 bg-white p-8 rounded-lg shadow flex flex-col gap-3"
+        className="w-full max-w-sm bg-white p-4 rounded-lg shadow flex flex-col gap-2"
       >
-        <h1 className="text-l font-semibold text-center mb-4">
+        <h1 className="text-sm font-semibold text-center mb-2">
           New Application
         </h1>
-        <label htmlFor="position" className="text-sm mb-0.5 font-medium">
+        <label htmlFor="position" className="text-xs mb-0.5 font-medium">
           Position
         </label>
         <input
@@ -64,9 +64,9 @@ export default function Form() {
           id="position"
           value={formData.position}
           onChange={handleChange}
-          className="border border-gray-400"
+          className="border border-gray-400 text-xs p-1"
         />
-        <label htmlFor="company" className="text-sm mb-0.5 font-medium">
+        <label htmlFor="company" className="text-xs mb-0.5 font-medium">
           Company
         </label>
         <input
@@ -75,9 +75,9 @@ export default function Form() {
           id="company"
           value={formData.company}
           onChange={handleChange}
-          className="border border-gray-400"
+          className="border border-gray-400 text-xs p-1"
         />
-        <label htmlFor="status" className="text-sm mb-0.5 font-medium">
+        <label htmlFor="status" className="text-xs mb-0.5 font-medium">
           Status
         </label>
         <select
@@ -85,7 +85,7 @@ export default function Form() {
           id="status"
           value={formData.status}
           onChange={handleChange}
-          className="border border-gray-400"
+          className="border border-gray-400 text-xs p-1"
         >
           <option value="">Select a status</option>
           <option value="apply">Apply</option>
@@ -95,7 +95,7 @@ export default function Form() {
           <option value="offer">Offer</option>
           <option value="rejected">Rejected</option>
         </select>
-        <label htmlFor="appliedDate" className="text-sm mb-0.5 font-medium">
+        <label htmlFor="dateApplied" className="text-xs mb-0.5 font-medium">
           Date applied
         </label>
         <input
@@ -104,10 +104,10 @@ export default function Form() {
           id="dateApplied"
           value={formData.dateApplied}
           onChange={handleChange}
-          className="border border-gray-400"
+          className="border border-gray-400 text-xs p-1"
         />
 
-        <label htmlFor="url" className="text-sm mb-0.5 font-medium">
+        <label htmlFor="url" className="text-xs mb-0.5 font-medium">
           Job Posting URL
         </label>
         <input
@@ -116,9 +116,9 @@ export default function Form() {
           id="url"
           value={formData.url}
           onChange={handleChange}
-          className="border border-gray-400"
+          className="border border-gray-400 text-xs p-1"
         />
-        <label htmlFor="notes" className="text-sm mb-0.5 font-medium">
+        <label htmlFor="notes" className="text-xs mb-0.5 font-medium">
           Notes
         </label>
         <textarea
@@ -126,9 +126,12 @@ export default function Form() {
           id="notes"
           value={formData.notes}
           onChange={handleChange}
-          className="border border-gray-400 h-24 resize-none"
+          className="border border-gray-400 text-xs p-1 h-16 resize-none"
         />
-        <button type="submit" className="border border-gray-500">
+        <button
+          type="submit"
+          className="border border-gray-500 text-xs p-1 mt-1"
+        >
           Create
         </button>
       </form>
