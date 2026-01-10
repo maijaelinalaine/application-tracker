@@ -46,6 +46,32 @@ export default function Form() {
     }
   };
 
+  const getDateFieldProps = () => {
+    const today = new Date().toISOString().split("T")[0];
+
+    if (formData.status === "apply") {
+      return {
+        label: "Apply by (deadline)",
+        min: today, // Only future dates
+        max: undefined,
+      };
+    } else if (formData.status === "applied") {
+      return {
+        label: "Date applied",
+        min: undefined,
+        max: today, // Only past dates
+      };
+    } else {
+      return {
+        label: "Date applied",
+        min: undefined,
+        max: undefined,
+      };
+    }
+  };
+
+  const dateFieldProps = getDateFieldProps();
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-2">
       <form
@@ -99,7 +125,7 @@ export default function Form() {
           <option value="rejected">Rejected</option>
         </select>
         <label htmlFor="dateApplied" className="text-xs mb-0.5 font-medium">
-          Date applied
+          {dateFieldProps.label}
         </label>
         <input
           type="date"
@@ -107,6 +133,8 @@ export default function Form() {
           id="dateApplied"
           value={formData.dateApplied}
           onChange={handleChange}
+          min={dateFieldProps.min}
+          max={dateFieldProps.max}
           className="border border-gray-400 text-xs p-1"
         />
 

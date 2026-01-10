@@ -69,7 +69,7 @@ export default function Home() {
                     </p>
                     {app.dateApplied && (
                       <p className="text-xs text-gray-500">
-                        Applied:{" "}
+                        {app.status === "apply" ? "Apply by: " : "Applied: "}
                         {new Date(app.dateApplied).toLocaleDateString()}
                       </p>
                     )}
