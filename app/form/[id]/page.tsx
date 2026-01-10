@@ -3,13 +3,13 @@
 import { useForm } from "@/hooks/useForm";
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useApplications } from "@/hooks/useApplications";
 
 export default function EditForm() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
-  const [loading, setLoading] = useState(true);
-
+  const appId = parseInt(id);
   const { formData, handleChange, handleReset, setFormData } = useForm({
     position: "",
     company: "",
@@ -18,9 +18,30 @@ export default function EditForm() {
     notes: "",
     url: "",
   });
+  const [loading, setLoading] = useState(true);
+  const { applications, updateApplication } = useApplications();
 
   useEffect(() => {
     if (!id) return;
+
+    // try to use in-memory data first
+    const found = applications.find((a) => a.id === appId);
+    if (found) {
+      setFormData({
+        position: found.position,
+        company: found.company,
+        status: found.status,
+        notes: found.notes ?? "",
+        url: found.url ?? "",
+        dateApplied: found.dateApplied
+          ? new Date(found.dateApplied).toISOString().split("T")[0]
+          : "",
+      });
+      setLoading(false);
+      return;
+    }
+
+    // fallback to fetching single item
     const fetchApp = async () => {
       try {
         const res = await fetch(`/api/applications/${id}`);
@@ -30,12 +51,17 @@ export default function EditForm() {
             position: data.position,
             company: data.company,
             status: data.status,
-            notes: data.notes || "",
-            url: data.url || "",
+            notes: data.notes ?? "",
+            url: data.url ?? "",
             dateApplied: data.dateApplied
               ? new Date(data.dateApplied).toISOString().split("T")[0]
               : "",
           });
+        } else {
+          console.error(
+            "Failed to fetch application for edit",
+            await res.text()
+          );
         }
       } catch (err) {
         console.error("Fetch error:", err);
@@ -44,29 +70,16 @@ export default function EditForm() {
       }
     };
     fetchApp();
-  }, [id, setFormData]);
+  }, [id, setFormData, applications]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`/api/applications/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      console.log("Response status:", res.status);
-
-      if (!res.ok) {
-        const errData = await res.json();
-        console.error("Update failed:", res.status, errData);
-        return;
-      }
-
+      await updateApplication(appId, formData);
       router.push("/");
     } catch (err) {
-      console.error("Fetch error:", err);
+      console.error("Update failed:", err);
     }
   };
 

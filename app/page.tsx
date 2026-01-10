@@ -2,49 +2,17 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
-interface Application {
-  id: number;
-  position: string;
-  company: string;
-  dateApplied: string | null;
-  status: string;
-  notes: string | null;
-  url: string | null;
-  createdAt: string;
-}
+import { useApplications } from "@/hooks/useApplications";
 
 export default function Home() {
-  const [applications, setApplications] = useState<Application[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { applications, loading, error, deleteApplication } = useApplications();
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
-
-  useEffect(() => {
-    fetchApplications();
-  }, []);
-
-  const fetchApplications = async () => {
-    try {
-      const res = await fetch("/api/applications");
-      if (res.ok) {
-        const data = await res.json();
-        setApplications(data);
-      }
-    } catch (err) {
-      console.error("Failed to fetch applications:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDelete = async (id: number) => {
     if (!confirm("Delete this application?")) return;
     try {
-      const res = await fetch(`/api/applications/${id}`, { method: "DELETE" });
-      if (res.ok) {
-        setApplications(applications.filter((app) => app.id !== id));
-        setOpenMenuId(null);
-      }
+      await deleteApplication(id);
+      setOpenMenuId(null);
     } catch (err) {
       console.error("Delete error:", err);
     }
@@ -54,6 +22,14 @@ export default function Home() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <p className="text-xs">Loading...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <p className="text-xs text-red-600">Failed to load applications</p>
       </div>
     );
   }
