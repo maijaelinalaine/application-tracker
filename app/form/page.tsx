@@ -56,9 +56,10 @@ export default function Form() {
           New Application
         </h1>
         <label htmlFor="position" className="text-xs mb-0.5 font-medium">
-          Position
+          Position*
         </label>
         <input
+          required
           type="text"
           name="position"
           id="position"
@@ -67,9 +68,10 @@ export default function Form() {
           className="border border-gray-400 text-xs p-1"
         />
         <label htmlFor="company" className="text-xs mb-0.5 font-medium">
-          Company
+          Company*
         </label>
         <input
+          required
           type="text"
           name="company"
           id="company"
@@ -78,9 +80,10 @@ export default function Form() {
           className="border border-gray-400 text-xs p-1"
         />
         <label htmlFor="status" className="text-xs mb-0.5 font-medium">
-          Status
+          Status*
         </label>
         <select
+          required
           name="status"
           id="status"
           value={formData.status}
