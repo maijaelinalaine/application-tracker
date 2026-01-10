@@ -29,7 +29,7 @@ A web application for keeping track of job/internship applications and staying c
 - Next.js 16
 - TypeScript
 - Tailwind CSS
-- \*SQLite with Prisma ORM
+- SQLite with Prisma ORM
 
 ## Installation
 
