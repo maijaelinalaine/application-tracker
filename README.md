@@ -21,8 +21,9 @@ A web application for keeping track of job/internship applications and staying c
 - Applications dashboard
 - Authentication with email
 - Search applications
+- Calendar view
 - Update application's status individually
-- Set reminders for follow-ups
+- Set reminders for follow-ups and to-dos
 
 ## Tech Stack
 
