@@ -2,6 +2,7 @@
 
 import { Bell, ExternalLink, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 interface Application {
   id: number;
@@ -17,9 +18,24 @@ interface Application {
 interface DashboardProps {
   applications: Application[];
   onDelete?: (id: number) => void;
+  onStatusChange?: (id: number, status: string) => void;
 }
 
-export default function Dashboard({ applications, onDelete }: DashboardProps) {
+const STATUS_OPTIONS = [
+  "apply",
+  "applied",
+  "assessment",
+  "interview",
+  "offer",
+  "rejected",
+];
+
+export default function Dashboard({
+  applications,
+  onDelete,
+  onStatusChange,
+}: DashboardProps) {
+  const [editingStatusId, setEditingStatusId] = useState<number | null>(null);
   const totalApps = applications.length;
 
   // Get upcoming deadlines
@@ -29,7 +45,7 @@ export default function Dashboard({ applications, onDelete }: DashboardProps) {
     .filter((app) => new Date(app.dateApplied!) > today)
     .sort(
       (a, b) =>
-        new Date(a.dateApplied!).getTime() - new Date(b.dateApplied!).getTime()
+        new Date(a.dateApplied!).getTime() - new Date(b.dateApplied!).getTime(),
     );
 
   // Get tasks/reminders (applications that need action)
@@ -37,15 +53,12 @@ export default function Dashboard({ applications, onDelete }: DashboardProps) {
     ...applications
       .filter((app) => app.status === "apply" && app.dateApplied)
       .filter((app) => new Date(app.dateApplied!) > today)
-      .slice(0, 3)
+      .slice(0, 2)
       .map((app) => ({
         id: app.id,
         title: `Apply to ${app.company}`,
-        description: `Deadline for ${app.position} position is ${new Date(
-          app.dateApplied!
-        ).toLocaleDateString()}`,
+        position: app.position,
         due: app.dateApplied!,
-        category: "Application",
         color: "bg-purple-50",
       })),
     ...applications
@@ -54,12 +67,31 @@ export default function Dashboard({ applications, onDelete }: DashboardProps) {
       .map((app) => ({
         id: app.id,
         title: `Prepare for ${app.company} interview`,
-        description: `Review and prepare for ${app.position} interview`,
+        position: app.position,
         due: app.dateApplied || new Date().toISOString(),
-        category: "Interview",
         color: "bg-yellow-50",
       })),
-  ].slice(0, 4);
+    ...applications
+      .filter((app) => app.status === "assessment")
+      .slice(0, 2)
+      .map((app) => ({
+        id: app.id,
+        title: `Complete ${app.company} assessment`,
+        position: app.position,
+        due: app.dateApplied || new Date().toISOString(),
+        color: "bg-blue-50",
+      })),
+    ...applications
+      .filter((app) => app.status === "offer")
+      .slice(0, 2)
+      .map((app) => ({
+        id: app.id,
+        title: `Respond to ${app.company} offer`,
+        position: app.position,
+        due: app.dateApplied || new Date().toISOString(),
+        color: "bg-green-50",
+      })),
+  ].slice(0, 6);
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
@@ -74,27 +106,32 @@ export default function Dashboard({ applications, onDelete }: DashboardProps) {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto">
+    <div className="w-full max-w-7xl mx-auto mt-8">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold mb-1">Application Dashboard</h1>
-        <p className="text-sm text-gray-600">
-          Track and manage your job applications
-        </p>
+      <div className="mb-4 flex items-center justify-between px-4">
+        <div>
+          <h1 className="text-md font-bold">Application Dashboard</h1>
+          <p className="text-xs text-gray-600">
+            Track and manage your job applications
+          </p>
+        </div>
+        <Link
+          href="/form"
+          className="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs font-medium"
+        >
+          + New Application
+        </Link>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4">
         {/* Left Sidebar - Reminders & Notes */}
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg border-2 border-blue-200 p-4">
+          <div className="bg-white rounded-md border-1 border-blue-600 p-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-blue-600" />
-                <h2 className="font-semibold">Reminders & Notes</h2>
+                <Bell className="w-5 h-5 text-indigo-600" />
+                <h2 className="text-xs font-semibold">Reminders & Notes</h2>
               </div>
-              <button className="text-xs bg-black text-white px-3 py-1 rounded">
-                + Add
-              </button>
             </div>
             <p className="text-xs text-gray-500 mb-4">
               Keep track of important dates and tasks
@@ -111,12 +148,7 @@ export default function Dashboard({ applications, onDelete }: DashboardProps) {
                       <div className="flex-1">
                         <div className="text-xs font-medium">{task.title}</div>
                         <div className="text-xs text-gray-600 mt-1">
-                          {task.description}
-                        </div>
-                        <div className="text-xs text-gray-500 mt-2 flex items-center gap-1">
-                          <span className="px-2 py-0.5 bg-white rounded text-xs">
-                            {task.category}
-                          </span>
+                          {task.position}
                         </div>
                         <div className="text-xs text-gray-500 mt-1">
                           Due: {new Date(task.due).toLocaleDateString()}
@@ -133,18 +165,24 @@ export default function Dashboard({ applications, onDelete }: DashboardProps) {
           </div>
         </div>
 
-        {/* Main Content - All Applications */}
-        <div className="lg:col-span-3">
-          <div className="bg-white rounded-lg border p-4">
+        <div className="md:col-span-3">
+          <div className="bg-white rounded-md border p-4">
             <div className="mb-4">
-              <h2 className="text-lg font-semibold">All Applications</h2>
+              <h2 className="text-xs font-semibold">All Applications</h2>
               <p className="text-xs text-gray-600">
                 View and manage your job applications
               </p>
             </div>
 
-            {/* Applications List */}
             <div className="space-y-3">
+              <div className="hidden md:grid grid-cols-12 gap-4 px-2 py-2 border-b text-xs font-semibold text-gray-600">
+                <div className="col-span-4">Position</div>
+                <div className="col-span-2">Company</div>
+                <div className="col-span-2">Status</div>
+                <div className="col-span-2">Date</div>
+                <div className="col-span-1 text-right">Actions</div>
+              </div>
+
               {applications.length === 0 ? (
                 <div className="py-8 text-center text-gray-500 text-xs">
                   No applications yet. Create your first one!
@@ -155,10 +193,12 @@ export default function Dashboard({ applications, onDelete }: DashboardProps) {
                     key={app.id}
                     className="border-b pb-3 hover:bg-gray-50 px-2 py-2 rounded"
                   >
-                    <div className="flex items-center gap-4 text-xs">
-                      {/* Position & Notes */}
-                      <div className="flex-1 min-w-0">
-                        <div className="font-semibold text-sm">
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 text-xs md:items-center">
+                      <div className="md:col-span-4 min-w-0">
+                        <div className="text-xs md:hidden font-semibold text-gray-600 mb-1">
+                          Position
+                        </div>
+                        <div className="font-semibold text-xs">
                           {app.position}
                         </div>
                         {app.notes && (
@@ -168,46 +208,79 @@ export default function Dashboard({ applications, onDelete }: DashboardProps) {
                         )}
                       </div>
 
-                      {/* Company */}
-                      <div className="w-24 shrink-0">
+                      <div className="md:col-span-2">
+                        <div className="text-xs md:hidden font-semibold text-gray-600 mb-1">
+                          Company
+                        </div>
                         <span className="text-blue-600 hover:underline cursor-pointer">
                           {app.company}
                         </span>
                       </div>
 
-                      {/* Status */}
-                      <div className="w-24 shrink-0">
-                        <span
-                          className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
-                            app.status
-                          )}`}
-                        >
-                          {app.status.charAt(0).toUpperCase() +
-                            app.status.slice(1)}
-                        </span>
-                      </div>
-
-                      {/* Date */}
-                      <div className="w-28 shrink-0 text-gray-600 flex items-center gap-1">
-                        {app.dateApplied ? (
-                          <>
-                            <span className="text-gray-400">📅</span>
-                            {new Date(app.dateApplied).toLocaleDateString(
-                              "en-US",
-                              {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              }
-                            )}
-                          </>
+                      <div className="md:col-span-2">
+                        <div className="text-xs md:hidden font-semibold text-gray-600 mb-1">
+                          Status
+                        </div>
+                        {editingStatusId === app.id ? (
+                          <select
+                            autoFocus
+                            value={app.status}
+                            onChange={(e) => {
+                              const newStatus = e.target.value;
+                              onStatusChange?.(app.id, newStatus);
+                              setEditingStatusId(null);
+                            }}
+                            onBlur={() => setEditingStatusId(null)}
+                            className="px-2 py-1 border rounded text-xs font-medium w-full"
+                          >
+                            {STATUS_OPTIONS.map((status) => (
+                              <option key={status} value={status}>
+                                {status.charAt(0).toUpperCase() +
+                                  status.slice(1)}
+                              </option>
+                            ))}
+                          </select>
                         ) : (
-                          <span className="text-gray-400">-</span>
+                          <div
+                            onClick={() => setEditingStatusId(app.id)}
+                            className="cursor-pointer hover:opacity-80 transition-opacity"
+                          >
+                            <span
+                              className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
+                                app.status,
+                              )}`}
+                            >
+                              {app.status.charAt(0).toUpperCase() +
+                                app.status.slice(1)}
+                            </span>
+                          </div>
                         )}
                       </div>
 
-                      {/* Actions */}
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="md:col-span-2 text-gray-600">
+                        <div className="text-xs md:hidden font-semibold text-gray-600 mb-1">
+                          Date
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {app.dateApplied ? (
+                            <>
+                              <span className="text-gray-400">📅</span>
+                              {new Date(app.dateApplied).toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                },
+                              )}
+                            </>
+                          ) : (
+                            <span className="text-gray-400">-</span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="md:col-span-1 flex items-center gap-2 justify-end">
                         {app.url && (
                           <a
                             href={app.url}
