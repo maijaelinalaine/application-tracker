@@ -60,7 +60,7 @@ export default function EditForm() {
         } else {
           console.error(
             "Failed to fetch application for edit",
-            await res.text()
+            await res.text(),
           );
         }
       } catch (err) {
@@ -97,14 +97,14 @@ export default function EditForm() {
     if (formData.status === "apply") {
       return {
         label: "Apply by (deadline)",
-        min: today, // Only future dates
+        min: today,
         max: undefined,
       };
     } else if (formData.status === "applied") {
       return {
         label: "Date applied",
         min: undefined,
-        max: today, // Only past dates
+        max: today, //
       };
     } else {
       return {

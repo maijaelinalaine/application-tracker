@@ -38,7 +38,6 @@ export default function Dashboard({
   const [editingStatusId, setEditingStatusId] = useState<number | null>(null);
   const totalApps = applications.length;
 
-  // Get upcoming deadlines
   const today = new Date();
   const upcomingDeadlines = applications
     .filter((app) => app.status === "apply" && app.dateApplied)
@@ -48,7 +47,6 @@ export default function Dashboard({
         new Date(a.dateApplied!).getTime() - new Date(b.dateApplied!).getTime(),
     );
 
-  // Get tasks/reminders (applications that need action)
   const tasks = [
     ...applications
       .filter((app) => app.status === "apply" && app.dateApplied)
@@ -107,7 +105,6 @@ export default function Dashboard({
 
   return (
     <div className="w-full max-w-7xl mx-auto mt-8">
-      {/* Header */}
       <div className="mb-4 flex items-center justify-between px-4">
         <div>
           <h1 className="text-md font-bold">Application Dashboard</h1>
@@ -124,7 +121,6 @@ export default function Dashboard({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4">
-        {/* Left Sidebar - Reminders & Notes */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-md border-1 border-blue-600 p-4">
             <div className="flex items-center justify-between mb-4">
