@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, ExternalLink, Edit, Trash2 } from "lucide-react";
+import { Bell, ExternalLink, Edit, Trash2, Calendar } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -57,7 +57,7 @@ export default function Dashboard({
         title: `Apply to ${app.company}`,
         position: app.position,
         due: app.dateApplied!,
-        color: "bg-purple-50",
+        color: "bg-indigo-50",
       })),
     ...applications
       .filter((app) => app.status === "interview")
@@ -67,7 +67,7 @@ export default function Dashboard({
         title: `Prepare for ${app.company} interview`,
         position: app.position,
         due: app.dateApplied || new Date().toISOString(),
-        color: "bg-yellow-50",
+        color: "bg-pink-50",
       })),
     ...applications
       .filter((app) => app.status === "assessment")
@@ -96,7 +96,7 @@ export default function Dashboard({
       apply: "text-gray-600 bg-gray-100",
       applied: "text-blue-600 bg-blue-100",
       assessment: "text-purple-600 bg-purple-100",
-      interview: "text-orange-600 bg-orange-100",
+      interview: "text-pink-600 bg-pink-100",
       offer: "text-green-600 bg-green-100",
       rejected: "text-red-600 bg-red-100",
     };
@@ -208,7 +208,7 @@ export default function Dashboard({
                         <div className="text-xs md:hidden font-semibold text-gray-600 mb-1">
                           Company
                         </div>
-                        <span className="text-blue-600 hover:underline cursor-pointer">
+                        <span className="text-gray-800 hover:underline cursor-pointer">
                           {app.company}
                         </span>
                       </div>
@@ -227,7 +227,7 @@ export default function Dashboard({
                               setEditingStatusId(null);
                             }}
                             onBlur={() => setEditingStatusId(null)}
-                            className="px-2 py-1 border rounded text-xs font-medium w-full"
+                            className="px-2 py-1 border rounded text-xs font-small w-full"
                           >
                             {STATUS_OPTIONS.map((status) => (
                               <option key={status} value={status}>
@@ -242,7 +242,7 @@ export default function Dashboard({
                             className="cursor-pointer hover:opacity-80 transition-opacity"
                           >
                             <span
-                              className={`px-2 py-1 rounded text-xs font-medium ${getStatusColor(
+                              className={`px-2 py-1 rounded text-xs ${getStatusColor(
                                 app.status,
                               )}`}
                             >
@@ -260,7 +260,7 @@ export default function Dashboard({
                         <div className="flex items-center gap-1">
                           {app.dateApplied ? (
                             <>
-                              <span className="text-gray-400">📅</span>
+                              <Calendar className="w-4 h-4 text-gray-400" />
                               {new Date(app.dateApplied).toLocaleDateString(
                                 "en-US",
                                 {
