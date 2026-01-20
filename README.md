@@ -15,15 +15,15 @@ A web application for keeping track of job/internship applications and staying c
   - Notes
 - View all applications in a list
 - Edit and delete applications
+- Applications dashboard
+- Reminders for follow-ups and to-dos
+- Update application's status individually
 
 ### Planned features
 
-- Applications dashboard
 - Authentication with email
 - Search applications
 - Calendar view
-- Update application's status individually
-- Set reminders for follow-ups and to-dos
 
 ## Tech Stack
 
