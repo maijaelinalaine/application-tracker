@@ -62,5 +62,5 @@ npm run dev
 
 5. Open (http://localhost:3000) in your browser
 
-<img width="1655" height="932" alt="image" src="https://github.com/user-attachments/assets/5cbb897d-492e-45df-b274-76680ec112df" />
+<img width="1655" height="932" alt="image" src="https://github.com/user-attachments/assets/9c1a3deb-f266-4960-8624-dcd9a66acd4f" />
 
