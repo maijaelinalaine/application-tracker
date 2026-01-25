@@ -61,3 +61,6 @@ npm run dev
 ```
 
 5. Open (http://localhost:3000) in your browser
+
+<img width="1896" height="953" alt="image" src="https://github.com/user-attachments/assets/0829f09b-b55f-435c-a14c-ee7c1927ab28" />
+
