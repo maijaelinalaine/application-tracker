@@ -1,7 +1,14 @@
 import Link from "next/link";
-import { Home, ClipboardList, Calendar } from "lucide-react";
+import { ClipboardList } from "lucide-react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import ProfileMenu from "@/components/ProfileMenu";
 
-export default function Navbar() {
+export default async function Navbar() {
+  const session = await getServerSession(authOptions);
+  const user = session?.user;
+  const userInitial = user?.name?.charAt(0) || user?.email?.charAt(0) || "U";
+
   return (
     <header className="flex items-center justify-between w-full h-16 px-6 py-3 bg-slate-700 font-sans">
       <Link
@@ -18,6 +25,17 @@ export default function Navbar() {
         <Link href="/form" className="text-base font-medium text-white">
           New application
         </Link>
+        {user ? (
+          <ProfileMenu
+            name={user.name}
+            image={user.image}
+            initial={userInitial}
+          />
+        ) : (
+          <Link href="/auth" className="text-base font-medium text-white">
+            Log in
+          </Link>
+        )}
       </div>
     </header>
   );
