@@ -32,7 +32,7 @@ export default function ProfileMenu({ name, image, initial }: ProfileMenuProps) 
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-3 text-white focus:outline-none"
+        className="flex items-center gap-3 text-white px-3 py-1.5 rounded-md transition-colors hover:bg-slate-600/70 focus:outline-none"
         aria-haspopup="menu"
         aria-expanded={open}
       >
