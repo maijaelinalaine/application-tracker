@@ -49,24 +49,49 @@ export default function Form() {
   const getDateFieldProps = () => {
     const today = new Date().toISOString().split("T")[0];
 
-    if (formData.status === "apply") {
-      return {
-        label: "Apply by (deadline)",
-        min: today, // Only future dates
-        max: undefined,
-      };
-    } else if (formData.status === "applied") {
-      return {
-        label: "Date applied",
-        min: undefined,
-        max: today, // Only past dates
-      };
-    } else {
-      return {
-        label: "Date applied",
-        min: undefined,
-        max: undefined,
-      };
+    switch (formData.status) {
+      case "apply":
+        return {
+          label: "Apply by (deadline)",
+          min: today,
+          max: undefined,
+        };
+      case "applied":
+        return {
+          label: "Date applied",
+          min: undefined,
+          max: today,
+        };
+      case "assessment":
+        return {
+          label: "Assessment due",
+          min: today,
+          max: undefined,
+        };
+      case "interview":
+        return {
+          label: "Interview date",
+          min: today,
+          max: undefined,
+        };
+      case "offer":
+        return {
+          label: "Offer date",
+          min: undefined,
+          max: undefined,
+        };
+      case "rejected":
+        return {
+          label: "Rejection date",
+          min: undefined,
+          max: today,
+        };
+      default:
+        return {
+          label: "Date applied",
+          min: undefined,
+          max: undefined,
+        };
     }
   };
 
