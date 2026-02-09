@@ -73,15 +73,19 @@ export default function Form() {
   const dateFieldProps = getDateFieldProps();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-2">
+    <div className="min-h-screen flex items-center justify-center p-2">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white p-4 rounded-lg shadow flex flex-col gap-2"
+        className="w-full max-w-xl bg-white p-6 rounded-md border flex flex-col gap-3"
       >
-        <h1 className="text-sm font-semibold text-center mb-2">
-          New Application
-        </h1>
-        <label htmlFor="position" className="text-xs mb-0.5 font-medium">
+        <div className="text-center mb-2">
+          <h1 className="text-2xl font-bold">New Application</h1>
+          <p className="text-base text-gray-600">
+            Add a new job application to your tracker
+          </p>
+        </div>
+
+        <label htmlFor="position" className="text-base font-semibold">
           Position*
         </label>
         <input
@@ -91,9 +95,10 @@ export default function Form() {
           id="position"
           value={formData.position}
           onChange={handleChange}
-          className="border border-gray-400 text-xs p-1"
+          className="border border-gray-400 text-base px-4 py-2.5 rounded"
         />
-        <label htmlFor="company" className="text-xs mb-0.5 font-medium">
+
+        <label htmlFor="company" className="text-base font-semibold">
           Company*
         </label>
         <input
@@ -103,9 +108,10 @@ export default function Form() {
           id="company"
           value={formData.company}
           onChange={handleChange}
-          className="border border-gray-400 text-xs p-1"
+          className="border border-gray-400 text-base px-4 py-2.5 rounded"
         />
-        <label htmlFor="status" className="text-xs mb-0.5 font-medium">
+
+        <label htmlFor="status" className="text-base font-semibold">
           Status*
         </label>
         <select
@@ -114,7 +120,7 @@ export default function Form() {
           id="status"
           value={formData.status}
           onChange={handleChange}
-          className="border border-gray-400 text-xs p-1"
+          className="border border-gray-400 text-base px-4 py-2.5 rounded"
         >
           <option value="">Select a status</option>
           <option value="apply">Apply</option>
@@ -124,7 +130,8 @@ export default function Form() {
           <option value="offer">Offer</option>
           <option value="rejected">Rejected</option>
         </select>
-        <label htmlFor="dateApplied" className="text-xs mb-0.5 font-medium">
+
+        <label htmlFor="dateApplied" className="text-base font-semibold">
           {dateFieldProps.label}
         </label>
         <input
@@ -135,10 +142,10 @@ export default function Form() {
           onChange={handleChange}
           min={dateFieldProps.min}
           max={dateFieldProps.max}
-          className="border border-gray-400 text-xs p-1"
+          className="border border-gray-400 text-base px-4 py-2.5 rounded"
         />
 
-        <label htmlFor="url" className="text-xs mb-0.5 font-medium">
+        <label htmlFor="url" className="text-base font-semibold">
           Job Posting URL
         </label>
         <input
@@ -147,9 +154,10 @@ export default function Form() {
           id="url"
           value={formData.url}
           onChange={handleChange}
-          className="border border-gray-400 text-xs p-1"
+          className="border border-gray-400 text-base px-4 py-2.5 rounded"
         />
-        <label htmlFor="notes" className="text-xs mb-0.5 font-medium">
+
+        <label htmlFor="notes" className="text-base font-semibold">
           Notes
         </label>
         <textarea
@@ -157,11 +165,12 @@ export default function Form() {
           id="notes"
           value={formData.notes}
           onChange={handleChange}
-          className="border border-gray-400 text-xs p-1 h-16 resize-none"
+          className="border border-gray-400 text-base px-4 py-2.5 rounded h-24 resize-none"
         />
+
         <button
           type="submit"
-          className="border border-gray-500 text-xs p-1 mt-1"
+          className="border border-gray-500 text-base px-4 py-2.5 rounded mt-1"
         >
           Create
         </button>
