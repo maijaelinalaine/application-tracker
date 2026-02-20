@@ -18,10 +18,10 @@ A web application for keeping track of job/internship applications and staying c
 - Applications dashboard
 - Reminders for follow-ups and to-dos
 - Update application's status individually
+- Authentication with email
 
 ### Planned features
 
-- Authentication with email
 - Search applications
 - Calendar view
 
